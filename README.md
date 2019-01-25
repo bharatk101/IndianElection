@@ -1,6 +1,6 @@
 # Indian Election Analysis
 
-#Overview
+# Overview
 Lok Sabha Election Analysis from 1977 - 2014.
 Select State and National constituency under it to fimd out which party got the most votes and in which year.
 
