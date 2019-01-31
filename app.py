@@ -168,17 +168,19 @@ app.layout = html.Div(children=[
     [Input(component_id='state', component_property='value')]
 )
 def update_graph(value):
-    state = df[df['st_name'] == value]
-    total = state.groupby(['partyabbre', 'year']).sum()['totvotpoll'].reset_index(name='Total')
-    ttile = 'Peopel\'s choice in ' + value
-    figure = bubbleplot(dataset=total,
-                        x_column='year', y_column='Total', bubble_column='partyabbre',
-                        size_column='Total', color_column='partyabbre', scale_bubble=3,
-                        x_title="Years", y_title="Total Number of Votes",
-                        title=ttile,
-                        x_range=['1977', '2014'],
-                        marker_opacity=0.6)
-    return figure
+  #filter df
+  state = df[df['st_name'] == value]
+  total = state.groupby(['partyabbre', 'year']).sum()['totvotpoll'].reset_index(name='Total')
+  ttile = 'Peopel\'s choice in ' + value
+  #plot
+  figure = bubbleplot(dataset=total,
+                      x_column='year', y_column='Total', bubble_column='partyabbre',
+                      size_column='Total', color_column='partyabbre', scale_bubble=3,
+                      x_title="Years", y_title="Total Number of Votes",
+                      title=ttile,
+                      x_range=['1977', '2014'],
+                      marker_opacity=0.6)
+  return figure
 
 # gender distribution graph
 
@@ -188,25 +190,27 @@ def update_graph(value):
     [Input(component_id='state', component_property='value')]
 )
 def gender_graph(value):
-    state = df[df['st_name'] == value]
-    state_f = state[state['cand_sex'] == 'F']
-    state_m = state[state['cand_sex'] == 'M']
-    gender = state_m.groupby(['year']).count()['cand_sex'].reset_index(name='Total')
-    gender_f = state_f.groupby(['year']).count()['cand_sex'].reset_index(name='Total')
-    trace1 = go.Scatter(x=gender.year,
-                        y=gender.Total,
-                        mode='lines+markers',
-                        name='Male')
-    trace2 = go.Scatter(x=gender_f.year,
-                        y=gender_f.Total,
-                        mode='markers+lines',
-                        name='Female')
-    data = [trace1, trace2]
-    layout = go.Layout(title='Candidate Gender Distribution',
-                       xaxis=dict(title='Year', range=[1977, 2014]),
-                       yaxis=dict(title='Count'))
-    fig = go.Figure(data=data, layout=layout)
-    return fig
+  #filter
+  state = df[df['st_name'] == value]
+  state_f = state[state['cand_sex'] == 'F']
+  state_m = state[state['cand_sex'] == 'M']
+  gender = state_m.groupby(['year']).count()['cand_sex'].reset_index(name='Total')
+  gender_f = state_f.groupby(['year']).count()['cand_sex'].reset_index(name='Total')
+  #plot
+  trace1 = go.Scatter(x=gender.year,
+                      y=gender.Total,
+                      mode='lines+markers',
+                      name='Male')
+  trace2 = go.Scatter(x=gender_f.year,
+                      y=gender_f.Total,
+                      mode='markers+lines',
+                      name='Female')
+  data = [trace1, trace2]
+  layout = go.Layout(title='Candidate Gender Distribution',
+                     xaxis=dict(title='Year', range=[1977, 2014]),
+                     yaxis=dict(title='Count'))
+  fig = go.Figure(data=data, layout=layout)
+  return fig
 
 # constituency Dropdown
 
@@ -216,8 +220,10 @@ def gender_graph(value):
     [Input('state', 'value')]
 )
 def update_dist_dropdown(name):
-    state = df[df['st_name'] == name]
-    return [{'label': i, 'value': i} for i in state.pc_name.unique()]
+  #state
+  state = df[df['st_name'] == name]
+  #constituency under the selcted state
+  return [{'label': i, 'value': i} for i in state.pc_name.unique()]
 
 # constituency plot
 
@@ -227,17 +233,19 @@ def update_dist_dropdown(name):
     [Input(component_id='dist-dropdown', component_property='value')]
 )
 def update_graph(value):
-    con = df[df['pc_name'] == value]
-    total = con.groupby(['partyabbre', 'year']).sum()['totvotpoll'].reset_index(name='Total')
-    ttitle = 'Peopel\'s choice in ' + value
-    figure = bubbleplot(dataset=total,
-                        x_column='year', y_column='Total', bubble_column='partyabbre',
-                        size_column='Total', color_column='partyabbre',
-                        x_title="Years", y_title="Total Number of Votes",
-                        title=ttitle,
-                        x_range=['1977', '2014'],
-                        marker_opacity=0.6)
-    return figure
+  #filter
+  con = df[df['pc_name'] == value]
+  total = con.groupby(['partyabbre', 'year']).sum()['totvotpoll'].reset_index(name='Total')
+  ttitle = 'Peopel\'s choice in ' + value
+  #plot
+  figure = bubbleplot(dataset=total,
+                      x_column='year', y_column='Total', bubble_column='partyabbre',
+                      size_column='Total', color_column='partyabbre',
+                      x_title="Years", y_title="Total Number of Votes",
+                      title=ttitle,
+                      x_range=['1977', '2014'],
+                      marker_opacity=0.6)
+  return figure
 
 # gender distribution graph
 
@@ -247,27 +255,29 @@ def update_graph(value):
     [Input(component_id='dist-dropdown', component_property='value')]
 )
 def gender_graph(value):
-    con = df[df['pc_name'] == value]
-    con_f = con[con['cand_sex'] == 'F']
-    con_m = con[con['cand_sex'] == 'M']
-    gender = con_m.groupby(['year']).count()['cand_sex'].reset_index(name='Total')
-    gender_f = con_f.groupby(['year']).count()['cand_sex'].reset_index(name='Total')
-    trace1 = go.Scatter(x=gender.year,
-                        y=gender.Total,
-                        mode='lines+markers',
-                        name='Male')
-    trace2 = go.Scatter(x=gender_f.year,
-                        y=gender_f.Total,
-                        mode='markers+lines',
-                        name='Female')
-    data = [trace1, trace2]
-    layout = go.Layout(title='Candidate Gender Distribution',
-                       xaxis=dict(title='Year', range=[1977, 2014]),
-                       yaxis=dict(title='Count'))
-    fig = go.Figure(data=data, layout=layout)
-    return fig
+  #filter
+  con = df[df['pc_name'] == value]
+  con_f = con[con['cand_sex'] == 'F']
+  con_m = con[con['cand_sex'] == 'M']
+  gender = con_m.groupby(['year']).count()['cand_sex'].reset_index(name='Total')
+  gender_f = con_f.groupby(['year']).count()['cand_sex'].reset_index(name='Total')
+  #plot
+  trace1 = go.Scatter(x=gender.year,
+                      y=gender.Total,
+                      mode='lines+markers',
+                      name='Male')
+  trace2 = go.Scatter(x=gender_f.year,
+                      y=gender_f.Total,
+                      mode='markers+lines',
+                      name='Female')
+  data = [trace1, trace2]
+  layout = go.Layout(title='Candidate Gender Distribution',
+                     xaxis=dict(title='Year', range=[1977, 2014]),
+                     yaxis=dict(title='Count'))
+  fig = go.Figure(data=data, layout=layout)
+  return fig
 
 
-# rum server
+# server
 if __name__ == '__main__':
-    app.run_server(debug=True)
+  app.run_server(debug=True)
